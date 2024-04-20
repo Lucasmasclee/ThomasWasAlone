@@ -4,6 +4,7 @@ using UnityEngine;
 public static class Constants
 {
     public const string FLOOR_LAYER = "Floor";
+    public const string PLAYER_LAYER = "Player";
     public const string CHAR_Blue_LAYER = "Char_Blue";
     public const string CHAR_Pink_LAYER = "Char_Pink";
     public const string CHAR_Green_LAYER = "Char_Green";
