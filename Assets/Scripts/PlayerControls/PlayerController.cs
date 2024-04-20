@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private Light2D light2D;
     private int exitChecks = 0;
     public bool IsAtExit => exitChecks == 2;
+    private Status status;
 
     private void Awake()
     {
@@ -21,6 +22,33 @@ public class PlayerController : MonoBehaviour
         myFeetCollider = GetComponent<CapsuleCollider2D>();
         light2D = GetComponentInChildren<Light2D>();
         pointer.enabled = false;
+    }
+
+    public void SetStatus(int index)
+    {
+        if (status == null)
+        {
+            this.status = new Status(index);
+        }
+    }
+
+    /// <summary>
+    /// Value used to define if a char is bigger, smaller or equal other.
+    /// The lower the factor, the bigger the char
+    /// </summary>
+    public int GetSplitFactor() => status.SplitIndex + status.SplitCount;
+
+    public void Split() => status.Split();
+
+    public void Merge() => status.Merge();
+
+    public bool CanSplit()
+    {
+        if (status != null)
+        {
+            return status.CanSplit;
+        }
+        return false;
     }
 
     public void Move()
@@ -67,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsOnGround() =>
         IsFeetTouching(Constants.FLOOR_LAYER,
+            Constants.PLAYER_LAYER,
             Constants.CHAR_Blue_LAYER,
             Constants.CHAR_Pink_LAYER,
             Constants.CHAR_Green_LAYER,
