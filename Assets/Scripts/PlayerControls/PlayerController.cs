@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     private Vector2 inputMovement;
     private Rigidbody2D myRigidBody;
@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private int exitChecks = 0;
     public bool IsAtExit => exitChecks == 2;
     private Status status;
+    float damagedShrinkSpeed = 0.2f;
 
     private void Awake()
     {
@@ -51,11 +52,16 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    public void Move()
+    public bool Move()
     {
+        if (this == null)
+        {
+            return false;
+        }
         velocity = myRigidBody.velocity;
         velocity.x = inputMovement.x * (moveSpeed * Time.fixedDeltaTime);
         myRigidBody.velocity = velocity;
+        return true;
     }
 
     public void OnMovement(Vector2 value)
@@ -63,6 +69,20 @@ public class PlayerController : MonoBehaviour
         inputMovement = value;
         light2D.enabled = true;
         pointer.enabled = true;
+    }
+
+    public Vector2 ShrinkToNewScale(float shrinkSpeed)
+    {
+        Vector2 newLocalScale = NewSplittedScale(this.transform.localScale);
+        this.transform.DOScale(newLocalScale, shrinkSpeed);
+        return newLocalScale;
+    }
+
+    private Vector2 NewSplittedScale(Vector2 startScale)
+    {
+        float newX = Mathf.Sqrt(startScale.x * startScale.x / 2);
+        float newY = Mathf.Sqrt(startScale.y * startScale.y / 2);
+        return new Vector2(newX, newY);
     }
 
     public void OnJump()
@@ -102,4 +122,20 @@ public class PlayerController : MonoBehaviour
             Constants.FLOOR_Blue_LAYER,
             Constants.FLOOR_Pink_LAYER,
             Constants.FLOOR_Green_LAYER);
+
+    public void TakeDamage(int damageAmount)
+    {
+        while (damageAmount > 0)
+        {
+            if (!CanSplit())
+            {
+                this.transform.DOKill();
+                Destroy(this.gameObject);
+                return;
+            }
+            Split();
+            ShrinkToNewScale(damagedShrinkSpeed);
+            damageAmount--;
+        }
+    }
 }
