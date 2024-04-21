@@ -11,4 +11,5 @@ public static class Constants
     public const string FLOOR_Blue_LAYER = "Floor_Blue";
     public const string FLOOR_Pink_LAYER = "Floor_Pink";
     public const string FLOOR_Green_LAYER = "Floor_Green";
+    public const string Firing_Tower_LAYER = "Firing_Tower";
 }
