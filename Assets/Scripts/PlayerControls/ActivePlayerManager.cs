@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Rendering;
@@ -54,7 +55,16 @@ public class ActivePlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ActivePlayerController.Move();
+        if (!ActivePlayerController.Move())
+        {
+            playerControllers.Remove(ActivePlayerController);
+            if (playerControllers.Count <= 0)
+            {
+                sceneActions.ResetLevel();
+                return;
+            }
+            IncrementIndex();
+        }
     }
 
     public void OnFowardCharacter(InputAction.CallbackContext value)
@@ -86,17 +96,9 @@ public class ActivePlayerManager : MonoBehaviour
         if (value.started && ActivePlayerController.CanSplit())
         {
             ActivePlayerController.Split();
-            Vector2 newLocalScale = NewSplittedScale(ActivePlayerController.transform.localScale);
-            ActivePlayerController.transform.DOScale(newLocalScale, shrinkSpeed);
+            Vector2 newLocalScale = ActivePlayerController.ShrinkToNewScale(shrinkSpeed);
             InstantiateNewChar(newLocalScale);
         }
-    }
-
-    private Vector2 NewSplittedScale(Vector2 startScale)
-    {
-        float newX = Mathf.Sqrt(startScale.x * startScale.x / 2);
-        float newY = Mathf.Sqrt(startScale.y * startScale.y / 2);
-        return new Vector2(newX, newY);
     }
 
     private void InstantiateNewChar(Vector2 newLocalScale)
