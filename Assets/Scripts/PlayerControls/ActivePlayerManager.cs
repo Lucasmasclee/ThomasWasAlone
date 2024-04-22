@@ -10,7 +10,6 @@ public class ActivePlayerManager : MonoBehaviour
 {
     [SerializeField] private int SplitLimitBase;
     private List<PlayerController> playerControllers;
-    private Vector2 inputMovement;
     private int controllerIndex;
     private CameraBehaviors cameraBehaviors;
     private SceneActions sceneActions;
@@ -19,6 +18,8 @@ public class ActivePlayerManager : MonoBehaviour
     private bool frozenLevel;
     private Vector2 almostZero;
     private float shrinkSpeed;
+    private InputManager inputManager;
+    private Vector2 inputMovement => inputManager.Movement;
 
     private void Awake()
     {
@@ -34,12 +35,17 @@ public class ActivePlayerManager : MonoBehaviour
         }
         cameraBehaviors = GetComponentInChildren<CameraBehaviors>();
         sceneActions = new SceneActions();
-        inputMovement = Vector2.zero;
         almostZero = new Vector2(0.1f, 0.1f);
+        inputManager = new InputManager();
     }
 
     private void Start()
     {
+        inputManager.OnFowardCharacter += OnFowardCharacter;
+        inputManager.OnBackwardCharacter += OnBackwardCharacter;
+        inputManager.OnResetLevel += OnResetLevel;
+        inputManager.OnSplit += OnSplit;
+        inputManager.OnJump += OnJump;
         SelectNewChar(ActivePlayerController);
     }
 
@@ -51,6 +57,11 @@ public class ActivePlayerManager : MonoBehaviour
     private void OnDisable()
     {
         ExitPortal.OnStepOnExitPortal -= CheckLevelComplete;
+        inputManager.OnFowardCharacter -= OnFowardCharacter;
+        inputManager.OnBackwardCharacter -= OnBackwardCharacter;
+        inputManager.OnResetLevel -= OnResetLevel;
+        inputManager.OnSplit -= OnSplit;
+        inputManager.OnJump -= OnJump;
     }
 
     private void FixedUpdate()
@@ -65,35 +76,27 @@ public class ActivePlayerManager : MonoBehaviour
             }
             IncrementIndex();
         }
+        ActivePlayerController.OnMovement(inputMovement);
     }
 
-    public void OnFowardCharacter(InputAction.CallbackContext value)
+    private void OnFowardCharacter()
     {
-        if (value.started)
-        {
-            IncrementIndex();
-        }
+        IncrementIndex();
     }
 
-    public void OnBackwardCharacter(InputAction.CallbackContext value)
+    private void OnBackwardCharacter()
     {
-        if (value.started)
-        {
-            DecrementIndex();
-        }
+        DecrementIndex();
     }
 
-    public void OnResetLevel(InputAction.CallbackContext value)
+    private void OnResetLevel()
     {
-        if (value.started)
-        {
-            sceneActions.ResetLevel();
-        }
+        sceneActions.ResetLevel();
     }
 
-    public void OnSplit(InputAction.CallbackContext value)
+    private void OnSplit()
     {
-        if (value.started && ActivePlayerController.CanSplit())
+        if (ActivePlayerController.CanSplit())
         {
             ActivePlayerController.Split();
             Vector2 newLocalScale = ActivePlayerController.ShrinkToNewScale(shrinkSpeed);
@@ -147,18 +150,9 @@ public class ActivePlayerManager : MonoBehaviour
         SelectNewChar(ActivePlayerController);
     }
 
-    public void OnMovement(InputAction.CallbackContext value)
+    public void OnJump()
     {
-        inputMovement = value.ReadValue<Vector2>();
-        ActivePlayerController.OnMovement(inputMovement);
-    }
-
-    public void OnJump(InputAction.CallbackContext value)
-    {
-        if (value.started)
-        {
-            ActivePlayerController.OnJump();
-        }
+        ActivePlayerController.OnJump();
     }
 
     private void SelectNewChar(PlayerController playerController)
