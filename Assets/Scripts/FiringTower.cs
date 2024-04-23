@@ -7,26 +7,43 @@ public class FiringTower : MonoBehaviour
     private enum ShootMethod
     {
         TargeteningShoot,
+        SingleShot,
         MultipleShot,
-        SingleShot
     }
 
     private Pool<Projectile> pool;
     private const int INITIAL_POOL_SIZE = 10;
+    private const int PROJECTILES_AMOUNT = 4;
 
     [SerializeField] private ShootMethod method;
     [SerializeField] private Transform firingOrigin;
     [SerializeField] private float firingForce;
     [SerializeField] private float firingRate;
+    private float delayBetweenBursts;
+    float currentTime = 0;
 
     private void Awake()
     {
         pool = new Pool<Projectile>(Constants.PROJECTILE_PREFAB, INITIAL_POOL_SIZE);
     }
 
-    void Start()
+    private void OnValidate()
     {
-        InvokeRepeating(method.ToString(), 0, firingRate);
+        delayBetweenBursts = 3;
+        if (method != ShootMethod.MultipleShot)
+        {
+            delayBetweenBursts = 0;
+        }
+    }
+
+    private void Update()
+    {
+        currentTime += Time.deltaTime;
+        if (currentTime > firingRate)
+        {
+            currentTime = 0 - delayBetweenBursts;
+            Invoke(method.ToString(), firingRate);
+        }
     }
 
     private void TargeteningShoot()
@@ -46,9 +63,7 @@ public class FiringTower : MonoBehaviour
             }
         }
         Vector2 targetDirection = target - (Vector2)firingOrigin.position;
-        Projectile projectile = pool.Rent();
-        projectile.transform.SetPositionAndRotation(firingOrigin.position, Quaternion.identity);
-        projectile.Shoot(firingForce * targetDirection.normalized, ProjectileCallBack);
+        RentAndShoot(firingForce * targetDirection.normalized);
 
     }
 
@@ -59,22 +74,28 @@ public class FiringTower : MonoBehaviour
 
     private void MultipleShot()
     {
-        StartCoroutine(RapidFire(0.3f));
+        StopCoroutine("RapidFire");
+        StartCoroutine(RapidFire(firingRate / PROJECTILES_AMOUNT));
     }
 
     IEnumerator RapidFire(float sec)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < PROJECTILES_AMOUNT; i++)
         {
-            Projectile projectile = pool.Rent();
-            projectile.Shoot(firingForce * firingOrigin.transform.forward, ProjectileCallBack);
+            RentAndShoot(firingForce * firingOrigin.right);
             yield return new WaitForSeconds(sec);
         }
     }
 
     private void SingleShot()
     {
+        RentAndShoot(firingForce * firingOrigin.right);
+    }
+
+    private void RentAndShoot(Vector2 force)
+    {
         Projectile projectile = pool.Rent();
-        projectile.Shoot(firingForce * firingOrigin.transform.forward, ProjectileCallBack);
+        projectile.transform.SetPositionAndRotation(firingOrigin.position, Quaternion.identity);
+        projectile.Shoot(force, ProjectileCallBack);
     }
 }

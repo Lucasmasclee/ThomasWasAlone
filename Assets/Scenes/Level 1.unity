@@ -1866,6 +1866,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7465551666558283388, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: method
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7465551666558283388, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: firingRate
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9156924212714039617, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
       propertyPath: m_Name
       value: Firing tower
