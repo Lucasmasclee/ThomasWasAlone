@@ -1818,6 +1818,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c8f8587348c3c84aabffb922e481daf, type: 3}
+--- !u!1001 &2232359293232935193
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.858528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.024864137
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070134632906033868, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9156924212714039617, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
+      propertyPath: m_Name
+      value: Firing tower
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5188f57546e418144b7f1d90d48e8ae2, type: 3}
 --- !u!1001 &7955979190725468875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1886,3 +1943,4 @@ SceneRoots:
   - {fileID: 1439334968}
   - {fileID: 35122338}
   - {fileID: 845905655}
+  - {fileID: 2232359293232935193}
