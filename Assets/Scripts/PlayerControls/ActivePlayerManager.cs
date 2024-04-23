@@ -1,10 +1,7 @@
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ActivePlayerManager : MonoBehaviour
 {
@@ -18,8 +15,7 @@ public class ActivePlayerManager : MonoBehaviour
     private bool frozenLevel;
     private Vector2 almostZero;
     private float shrinkSpeed;
-    private InputManager inputManager;
-    private Vector2 inputMovement => inputManager.Movement;
+    private Vector2 inputMovement => GameManager.Instance.InputManager.Movement;
 
     private void Awake()
     {
@@ -36,16 +32,15 @@ public class ActivePlayerManager : MonoBehaviour
         cameraBehaviors = GetComponentInChildren<CameraBehaviors>();
         sceneActions = new SceneActions();
         almostZero = new Vector2(0.1f, 0.1f);
-        inputManager = new InputManager();
     }
 
     private void Start()
     {
-        inputManager.OnFowardCharacter += OnFowardCharacter;
-        inputManager.OnBackwardCharacter += OnBackwardCharacter;
-        inputManager.OnResetLevel += OnResetLevel;
-        inputManager.OnSplit += OnSplit;
-        inputManager.OnJump += OnJump;
+        GameManager.Instance.InputManager.OnFowardCharacter += OnFowardCharacter;
+        GameManager.Instance.InputManager.OnBackwardCharacter += OnBackwardCharacter;
+        GameManager.Instance.InputManager.OnResetLevel += OnResetLevel;
+        GameManager.Instance.InputManager.OnSplit += OnSplit;
+        GameManager.Instance.InputManager.OnJump += OnJump;
         SelectNewChar(ActivePlayerController);
     }
 
@@ -54,14 +49,14 @@ public class ActivePlayerManager : MonoBehaviour
         ExitPortal.OnStepOnExitPortal += CheckLevelComplete;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         ExitPortal.OnStepOnExitPortal -= CheckLevelComplete;
-        inputManager.OnFowardCharacter -= OnFowardCharacter;
-        inputManager.OnBackwardCharacter -= OnBackwardCharacter;
-        inputManager.OnResetLevel -= OnResetLevel;
-        inputManager.OnSplit -= OnSplit;
-        inputManager.OnJump -= OnJump;
+        GameManager.Instance.InputManager.OnFowardCharacter -= OnFowardCharacter;
+        GameManager.Instance.InputManager.OnBackwardCharacter -= OnBackwardCharacter;
+        GameManager.Instance.InputManager.OnResetLevel -= OnResetLevel;
+        GameManager.Instance.InputManager.OnSplit -= OnSplit;
+        GameManager.Instance.InputManager.OnJump -= OnJump;
     }
 
     private void FixedUpdate()
@@ -81,12 +76,18 @@ public class ActivePlayerManager : MonoBehaviour
 
     private void OnFowardCharacter()
     {
-        IncrementIndex();
+        if (playerControllers.Count != 1)
+        {
+            IncrementIndex();
+        }
     }
 
     private void OnBackwardCharacter()
     {
-        DecrementIndex();
+        if (playerControllers.Count != 1)
+        {
+            DecrementIndex();
+        }
     }
 
     private void OnResetLevel()
