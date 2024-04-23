@@ -123,7 +123,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             Constants.CHAR_Green_LAYER,
             Constants.FLOOR_Blue_LAYER,
             Constants.FLOOR_Pink_LAYER,
-            Constants.FLOOR_Green_LAYER);
+            Constants.FLOOR_Green_LAYER,
+            Constants.Firing_Tower_LAYER);
 
     public void TakeDamage(int damageAmount)
     {

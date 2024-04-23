@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -13,5 +14,6 @@ public class Projectile : MonoBehaviour
             return;
         }
         damageable.TakeDamage(projectileDamage);
+        Destroy(this.gameObject);
     }
 }
