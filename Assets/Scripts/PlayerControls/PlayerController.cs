@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         myFeetCollider = GetComponent<CapsuleCollider2D>();
         light2D = GetComponentInChildren<Light2D>();
         pointer.enabled = false;
+        PlayerController[] objects = FindObjectsOfType(typeof(PlayerController)) as PlayerController[];
     }
 
     public void SetStatus(int index)
@@ -121,7 +123,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             Constants.CHAR_Green_LAYER,
             Constants.FLOOR_Blue_LAYER,
             Constants.FLOOR_Pink_LAYER,
-            Constants.FLOOR_Green_LAYER);
+            Constants.FLOOR_Green_LAYER,
+            Constants.Firing_Tower_LAYER);
 
     public void TakeDamage(int damageAmount)
     {

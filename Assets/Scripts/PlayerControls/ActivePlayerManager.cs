@@ -1,16 +1,12 @@
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ActivePlayerManager : MonoBehaviour
 {
     [SerializeField] private int SplitLimitBase;
     private List<PlayerController> playerControllers;
-    private Vector2 inputMovement;
     private int controllerIndex;
     private CameraBehaviors cameraBehaviors;
     private SceneActions sceneActions;
@@ -19,6 +15,7 @@ public class ActivePlayerManager : MonoBehaviour
     private bool frozenLevel;
     private Vector2 almostZero;
     private float shrinkSpeed;
+    private Vector2 inputMovement => GameManager.Instance.InputManager.Movement;
 
     private void Awake()
     {
@@ -34,12 +31,16 @@ public class ActivePlayerManager : MonoBehaviour
         }
         cameraBehaviors = GetComponentInChildren<CameraBehaviors>();
         sceneActions = new SceneActions();
-        inputMovement = Vector2.zero;
         almostZero = new Vector2(0.1f, 0.1f);
     }
 
     private void Start()
     {
+        GameManager.Instance.InputManager.OnFowardCharacter += OnFowardCharacter;
+        GameManager.Instance.InputManager.OnBackwardCharacter += OnBackwardCharacter;
+        GameManager.Instance.InputManager.OnResetLevel += OnResetLevel;
+        GameManager.Instance.InputManager.OnSplit += OnSplit;
+        GameManager.Instance.InputManager.OnJump += OnJump;
         SelectNewChar(ActivePlayerController);
     }
 
@@ -48,9 +49,14 @@ public class ActivePlayerManager : MonoBehaviour
         ExitPortal.OnStepOnExitPortal += CheckLevelComplete;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         ExitPortal.OnStepOnExitPortal -= CheckLevelComplete;
+        GameManager.Instance.InputManager.OnFowardCharacter -= OnFowardCharacter;
+        GameManager.Instance.InputManager.OnBackwardCharacter -= OnBackwardCharacter;
+        GameManager.Instance.InputManager.OnResetLevel -= OnResetLevel;
+        GameManager.Instance.InputManager.OnSplit -= OnSplit;
+        GameManager.Instance.InputManager.OnJump -= OnJump;
     }
 
     private void FixedUpdate()
@@ -65,35 +71,34 @@ public class ActivePlayerManager : MonoBehaviour
             }
             IncrementIndex();
         }
+
+        ActivePlayerController.OnMovement(inputMovement);
     }
 
-    public void OnFowardCharacter(InputAction.CallbackContext value)
+    private void OnFowardCharacter()
     {
-        if (value.started)
+        if (playerControllers.Count != 1)
         {
             IncrementIndex();
         }
     }
 
-    public void OnBackwardCharacter(InputAction.CallbackContext value)
+    private void OnBackwardCharacter()
     {
-        if (value.started)
+        if (playerControllers.Count != 1)
         {
             DecrementIndex();
         }
     }
 
-    public void OnResetLevel(InputAction.CallbackContext value)
+    private void OnResetLevel()
     {
-        if (value.started)
-        {
-            sceneActions.ResetLevel();
-        }
+        sceneActions.ResetLevel();
     }
 
-    public void OnSplit(InputAction.CallbackContext value)
+    private void OnSplit()
     {
-        if (value.started && ActivePlayerController.CanSplit())
+        if (ActivePlayerController.CanSplit())
         {
             ActivePlayerController.Split();
             Vector2 newLocalScale = ActivePlayerController.ShrinkToNewScale(shrinkSpeed);
@@ -147,18 +152,9 @@ public class ActivePlayerManager : MonoBehaviour
         SelectNewChar(ActivePlayerController);
     }
 
-    public void OnMovement(InputAction.CallbackContext value)
+    public void OnJump()
     {
-        inputMovement = value.ReadValue<Vector2>();
-        ActivePlayerController.OnMovement(inputMovement);
-    }
-
-    public void OnJump(InputAction.CallbackContext value)
-    {
-        if (value.started)
-        {
-            ActivePlayerController.OnJump();
-        }
+        ActivePlayerController.OnJump();
     }
 
     private void SelectNewChar(PlayerController playerController)
