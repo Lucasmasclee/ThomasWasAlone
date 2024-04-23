@@ -71,6 +71,7 @@ public class ActivePlayerManager : MonoBehaviour
             }
             IncrementIndex();
         }
+
         ActivePlayerController.OnMovement(inputMovement);
     }
 
