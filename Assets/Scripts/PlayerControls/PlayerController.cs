@@ -95,6 +95,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    public void OnStick()
+    {
+        if(IsOnWall())
+        {
+            myRigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+    }
+
+    public void OnUnStick()
+    {
+        myRigidBody.constraints = RigidbodyConstraints2D.None;
+    }
+
     public void StopMovement()
     {
         myRigidBody.velocity = Vector2.zero;
@@ -124,6 +137,10 @@ public class PlayerController : MonoBehaviour, IDamageable
             Constants.FLOOR_Blue_LAYER,
             Constants.FLOOR_Pink_LAYER,
             Constants.FLOOR_Green_LAYER,
+            Constants.Firing_Tower_LAYER);
+
+    private bool IsOnWall() =>
+        IsFeetTouching(Constants.Wall_LAYER,
             Constants.Firing_Tower_LAYER);
 
     public void TakeDamage(int damageAmount)

@@ -41,6 +41,8 @@ public class ActivePlayerManager : MonoBehaviour
         GameManager.Instance.InputManager.OnResetLevel += OnResetLevel;
         GameManager.Instance.InputManager.OnSplit += OnSplit;
         GameManager.Instance.InputManager.OnJump += OnJump;
+        GameManager.Instance.InputManager.OnStick += OnStick;
+        GameManager.Instance.InputManager.OnUnstick += OnUnstick;
         SelectNewChar(ActivePlayerController);
     }
 
@@ -57,6 +59,8 @@ public class ActivePlayerManager : MonoBehaviour
         GameManager.Instance.InputManager.OnResetLevel -= OnResetLevel;
         GameManager.Instance.InputManager.OnSplit -= OnSplit;
         GameManager.Instance.InputManager.OnJump -= OnJump;
+        GameManager.Instance.InputManager.OnStick -= OnStick;
+        GameManager.Instance.InputManager.OnUnstick -= OnUnstick;
     }
 
     private void FixedUpdate()
@@ -106,6 +110,16 @@ public class ActivePlayerManager : MonoBehaviour
         }
     }
 
+    private void OnStick()
+    {
+        ActivePlayerController.OnStick();
+    }
+
+    private void OnUnstick()
+    {
+        ActivePlayerController.OnUnStick();
+    }
+
     private void InstantiateNewChar(Vector2 newLocalScale)
     {
         PlayerController newChar = Instantiate(
@@ -150,6 +164,7 @@ public class ActivePlayerManager : MonoBehaviour
         ActivePlayerController.StopMovement();
         controllerIndex = (controllerIndex - 1 + playerControllers.Count) % playerControllers.Count;
         SelectNewChar(ActivePlayerController);
+        OnUnstick();
     }
 
     public void OnJump()
