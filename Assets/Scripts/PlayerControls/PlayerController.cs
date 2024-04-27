@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public bool IsAtExit => exitChecks == 2;
     private Status status;
     float damagedShrinkSpeed = 0.2f;
+    public bool IsDead { get; private set; } = false;
 
     private void Awake()
     {
@@ -149,8 +150,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             if (!CanSplit())
             {
-                this.transform.DOKill();
-                Destroy(this.gameObject);
+                IsDead = true;
                 return;
             }
             Split();
