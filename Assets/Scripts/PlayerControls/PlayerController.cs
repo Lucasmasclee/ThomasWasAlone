@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public bool IsAtExit => exitChecks == 2;
     private Status status;
     float damagedShrinkSpeed = 0.2f;
+    public bool IsDead { get; private set; } = false;
 
     private void Awake()
     {
@@ -95,6 +96,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    public void OnStick()
+    {
+        if(IsOnWall())
+        {
+            myRigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+    }
+
+    public void OnUnStick()
+    {
+        myRigidBody.constraints = RigidbodyConstraints2D.None;
+    }
+
     public void StopMovement()
     {
         myRigidBody.velocity = Vector2.zero;
@@ -126,14 +140,17 @@ public class PlayerController : MonoBehaviour, IDamageable
             Constants.FLOOR_Green_LAYER,
             Constants.Firing_Tower_LAYER);
 
+    private bool IsOnWall() =>
+        IsFeetTouching(Constants.Wall_LAYER,
+            Constants.Firing_Tower_LAYER);
+
     public void TakeDamage(int damageAmount)
     {
         while (damageAmount > 0)
         {
             if (!CanSplit())
             {
-                this.transform.DOKill();
-                Destroy(this.gameObject);
+                IsDead = true;
                 return;
             }
             Split();

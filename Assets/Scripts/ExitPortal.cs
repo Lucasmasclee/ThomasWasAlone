@@ -3,57 +3,31 @@ using UnityEngine;
 
 public class ExitPortal : MonoBehaviour
 {
-    public delegate void StepOnExitPortal(int value);
-    public static event StepOnExitPortal OnStepOnExitPortal;
-    private Vector3 initialScale;
-    private Vector3 maxScale;
     private Transform spriteTransform;
-    private PlayerController myPlayer;
-    private Tweener myTweener;
+    private SceneActions sceneActions;
+    private Vector2 minPlayerScale;
 
     private void Awake()
     {
-        spriteTransform = this.transform.parent.GetComponentInChildren<SpriteRenderer>().transform;
-        initialScale = spriteTransform.localScale;
-        maxScale = spriteTransform.localScale * 1.1f;
+        spriteTransform = GetComponent<SpriteRenderer>().transform;
+        sceneActions = new SceneActions();
+        minPlayerScale = new Vector2(0.1f, 0.1f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision is BoxCollider2D && collision.CompareTag(tag))
+        PlayerController playerController = collision.GetComponent<PlayerController>();
+
+        if (playerController != null)
         {
-            if (!myPlayer)
-            {
-                myPlayer = collision.GetComponent<PlayerController>();
-            }
-            myPlayer.IncrementExitChecks();
-            if (myPlayer.IsAtExit)
-            {
-                if (OnStepOnExitPortal != null)
-                {
-                    OnStepOnExitPortal(1);
-                }
-                myTweener?.Kill();
-                myTweener = spriteTransform.DOPunchScale(maxScale, 2.5f, 3, 0);
-            }
+            playerController.transform.DOScale(minPlayerScale, 0.5f);
+            spriteTransform.DOScale(Vector2.zero, 0.5f);
+            Invoke(nameof(CompleteLevel), 1);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void CompleteLevel()
     {
-        if (collision is BoxCollider2D && collision.CompareTag(tag))
-        {
-            if (!myPlayer)
-            {
-                myPlayer = collision.GetComponent<PlayerController>();
-            }
-            if (myPlayer.IsAtExit && OnStepOnExitPortal != null)
-            {
-                OnStepOnExitPortal(-1);
-            }
-            myPlayer.DecrementExitChecks();
-            myTweener?.Kill();
-            spriteTransform.localScale = initialScale;
-        }
+        sceneActions.LoadNextScene();
     }
 }

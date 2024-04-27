@@ -10,20 +10,15 @@ public class ActivePlayerManager : MonoBehaviour
     private int controllerIndex;
     private CameraBehaviors cameraBehaviors;
     private SceneActions sceneActions;
-    private PlayerController ActivePlayerController => playerControllers[controllerIndex];
-    private int playersAtExitPortal;
-    private bool frozenLevel;
-    private Vector2 almostZero;
+    private PlayerController ActivePlayerController;
     private float shrinkSpeed;
     private Vector2 inputMovement => GameManager.Instance.InputManager.Movement;
 
     private void Awake()
     {
         Status.SetSplitLimitBase(SplitLimitBase);
-        playersAtExitPortal = 0;
         controllerIndex = 0;
         shrinkSpeed = 0.5f;
-        frozenLevel = false;
         playerControllers = GetComponentsInChildren<PlayerController>().ToList();
         foreach (PlayerController playerController in playerControllers)
         {
@@ -31,7 +26,6 @@ public class ActivePlayerManager : MonoBehaviour
         }
         cameraBehaviors = GetComponentInChildren<CameraBehaviors>();
         sceneActions = new SceneActions();
-        almostZero = new Vector2(0.1f, 0.1f);
     }
 
     private void Start()
@@ -41,37 +35,53 @@ public class ActivePlayerManager : MonoBehaviour
         GameManager.Instance.InputManager.OnResetLevel += OnResetLevel;
         GameManager.Instance.InputManager.OnSplit += OnSplit;
         GameManager.Instance.InputManager.OnJump += OnJump;
-        SelectNewChar(ActivePlayerController);
-    }
-
-    private void OnEnable()
-    {
-        ExitPortal.OnStepOnExitPortal += CheckLevelComplete;
+        GameManager.Instance.InputManager.OnStick += OnStick;
+        GameManager.Instance.InputManager.OnUnstick += OnUnstick;
+        ActivePlayerController = playerControllers.First();
+        SelectNewChar();
     }
 
     private void OnDestroy()
     {
-        ExitPortal.OnStepOnExitPortal -= CheckLevelComplete;
         GameManager.Instance.InputManager.OnFowardCharacter -= OnFowardCharacter;
         GameManager.Instance.InputManager.OnBackwardCharacter -= OnBackwardCharacter;
         GameManager.Instance.InputManager.OnResetLevel -= OnResetLevel;
         GameManager.Instance.InputManager.OnSplit -= OnSplit;
         GameManager.Instance.InputManager.OnJump -= OnJump;
+        GameManager.Instance.InputManager.OnStick -= OnStick;
+        GameManager.Instance.InputManager.OnUnstick -= OnUnstick;
     }
 
     private void FixedUpdate()
     {
-        if (!ActivePlayerController.Move())
+        Stack<PlayerController> playerControllersToDie = new Stack<PlayerController>();
+
+        foreach (PlayerController playerController in playerControllers)
         {
-            playerControllers.Remove(ActivePlayerController);
-            if (playerControllers.Count <= 0)
+            if (!playerController.IsDead) continue;
+
+            playerControllersToDie.Push(playerController);
+            playerController.transform.DOKill();
+
+            if (playerController.GetInstanceID() == ActivePlayerController.GetInstanceID())
             {
-                sceneActions.ResetLevel();
-                return;
+                IncrementIndex();
             }
-            IncrementIndex();
         }
 
+        if (playerControllers.Count - playerControllersToDie.Count <= 0)
+        {
+            sceneActions.ResetLevel();
+            return;
+        }
+
+        foreach (PlayerController playerControllerToDie in  playerControllersToDie)
+        {
+            playerControllers.Remove(playerControllerToDie);
+            Object.Destroy(playerControllerToDie.gameObject);
+        }
+
+        ActivePlayerController.Move();
         ActivePlayerController.OnMovement(inputMovement);
     }
 
@@ -106,50 +116,43 @@ public class ActivePlayerManager : MonoBehaviour
         }
     }
 
+    private void OnStick()
+    {
+        ActivePlayerController.OnStick();
+    }
+
+    private void OnUnstick()
+    {
+        ActivePlayerController.OnUnStick();
+    }
+
     private void InstantiateNewChar(Vector2 newLocalScale)
     {
         PlayerController newChar = Instantiate(
                 ActivePlayerController,
                 ActivePlayerController.transform.position,
                 Quaternion.identity,
-                this.transform); // The new char will be a child of this object.
+                this.transform);
         newChar.SetStatus(ActivePlayerController.GetSplitFactor());
         playerControllers.Add(newChar);
         newChar.transform.DOScale(newLocalScale, shrinkSpeed);
-    }
-
-    private void CheckLevelComplete(int value)
-    {
-        playersAtExitPortal += value;
-
-        if (playersAtExitPortal == playerControllers.Count && !frozenLevel)
-        {
-            frozenLevel = true;
-            foreach (PlayerController playerController in playerControllers)
-            {
-                playerController.transform.DOScale(almostZero, 1f);
-            }
-            Invoke(nameof(CompleteLevel), 2);
-        }
-    }
-
-    private void CompleteLevel()
-    {
-        sceneActions.LoadNextScene();
     }
 
     private void IncrementIndex()
     {
         ActivePlayerController.StopMovement();
         controllerIndex = (controllerIndex + 1) % playerControllers.Count;
-        SelectNewChar(ActivePlayerController);
+        ActivePlayerController = playerControllers[controllerIndex];
+        SelectNewChar();
     }
 
     private void DecrementIndex()
     {
         ActivePlayerController.StopMovement();
         controllerIndex = (controllerIndex - 1 + playerControllers.Count) % playerControllers.Count;
-        SelectNewChar(ActivePlayerController);
+        ActivePlayerController = playerControllers[controllerIndex];
+        SelectNewChar();
+        OnUnstick();
     }
 
     public void OnJump()
@@ -157,17 +160,18 @@ public class ActivePlayerManager : MonoBehaviour
         ActivePlayerController.OnJump();
     }
 
-    private void SelectNewChar(PlayerController playerController)
+    private void SelectNewChar()
     {
-        playerController.OnMovement(inputMovement);
-        cameraBehaviors.FollowChar(playerController.transform);
+        ActivePlayerController = playerControllers[controllerIndex];
+        ActivePlayerController.OnMovement(inputMovement);
+        cameraBehaviors.FollowChar(ActivePlayerController.transform);
     }
 
     public void MergeObjects(Vector3 pos1, Vector3 pos2, float scale)
     {
         ActivePlayerController.Merge();
-        Vector3 spawnPos = (pos1 + pos2) / 2f; // Spawn pos will be in the middle of the two objects
-        PlayerController newObj = Instantiate(ActivePlayerController, spawnPos, Quaternion.identity); // Instantiate the object
+        Vector3 spawnPos = (pos1 + pos2) / 2f;
+        PlayerController newObj = Instantiate(ActivePlayerController, spawnPos, Quaternion.identity);
         newObj.transform.localScale = new Vector3(scale, scale, 0f);
     }
 }
