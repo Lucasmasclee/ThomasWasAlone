@@ -21,7 +21,7 @@ public class FiringTower : MonoBehaviour
     [SerializeField] private float firingRate;
     [SerializeField] Vector2 firingDirection;
     private float delayBetweenBursts;
-    float currentTime = 0;
+    private float currentTime = 0;
 
     private void Awake()
     {
