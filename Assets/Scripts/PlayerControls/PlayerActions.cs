@@ -80,6 +80,33 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Stick"",
+                    ""type"": ""Button"",
+                    ""id"": ""33776d66-16e4-4a9f-a130-80750cbfd893"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Unstick"",
+                    ""type"": ""Button"",
+                    ""id"": ""56951936-4165-4add-9c2b-0c6c43eb545e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Merge"",
+                    ""type"": ""Button"",
+                    ""id"": ""192517ce-a059-4f25-a878-d29e225c7ea9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -258,6 +285,39 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Split"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8867d61c-3029-4a35-adf7-f7103564372f"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Stick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""185f0a5d-a926-4912-a2c2-7f1c48518fba"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Unstick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""72cff04b-e4cb-4809-b6cb-a86036cf943d"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Merge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -295,6 +355,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_PlayerControls_BackwardCharacter = m_PlayerControls.FindAction("BackwardCharacter", throwIfNotFound: true);
         m_PlayerControls_ResetLevel = m_PlayerControls.FindAction("ResetLevel", throwIfNotFound: true);
         m_PlayerControls_Split = m_PlayerControls.FindAction("Split", throwIfNotFound: true);
+        m_PlayerControls_Stick = m_PlayerControls.FindAction("Stick", throwIfNotFound: true);
+        m_PlayerControls_Unstick = m_PlayerControls.FindAction("Unstick", throwIfNotFound: true);
+        m_PlayerControls_Merge = m_PlayerControls.FindAction("Merge", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -362,6 +425,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_BackwardCharacter;
     private readonly InputAction m_PlayerControls_ResetLevel;
     private readonly InputAction m_PlayerControls_Split;
+    private readonly InputAction m_PlayerControls_Stick;
+    private readonly InputAction m_PlayerControls_Unstick;
+    private readonly InputAction m_PlayerControls_Merge;
     public struct PlayerControlsActions
     {
         private @PlayerActions m_Wrapper;
@@ -372,6 +438,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @BackwardCharacter => m_Wrapper.m_PlayerControls_BackwardCharacter;
         public InputAction @ResetLevel => m_Wrapper.m_PlayerControls_ResetLevel;
         public InputAction @Split => m_Wrapper.m_PlayerControls_Split;
+        public InputAction @Stick => m_Wrapper.m_PlayerControls_Stick;
+        public InputAction @Unstick => m_Wrapper.m_PlayerControls_Unstick;
+        public InputAction @Merge => m_Wrapper.m_PlayerControls_Merge;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -399,6 +468,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Split.started += instance.OnSplit;
             @Split.performed += instance.OnSplit;
             @Split.canceled += instance.OnSplit;
+            @Stick.started += instance.OnStick;
+            @Stick.performed += instance.OnStick;
+            @Stick.canceled += instance.OnStick;
+            @Unstick.started += instance.OnUnstick;
+            @Unstick.performed += instance.OnUnstick;
+            @Unstick.canceled += instance.OnUnstick;
+            @Merge.started += instance.OnMerge;
+            @Merge.performed += instance.OnMerge;
+            @Merge.canceled += instance.OnMerge;
         }
 
         private void UnregisterCallbacks(IPlayerControlsActions instance)
@@ -421,6 +499,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Split.started -= instance.OnSplit;
             @Split.performed -= instance.OnSplit;
             @Split.canceled -= instance.OnSplit;
+            @Stick.started -= instance.OnStick;
+            @Stick.performed -= instance.OnStick;
+            @Stick.canceled -= instance.OnStick;
+            @Unstick.started -= instance.OnUnstick;
+            @Unstick.performed -= instance.OnUnstick;
+            @Unstick.canceled -= instance.OnUnstick;
+            @Merge.started -= instance.OnMerge;
+            @Merge.performed -= instance.OnMerge;
+            @Merge.canceled -= instance.OnMerge;
         }
 
         public void RemoveCallbacks(IPlayerControlsActions instance)
@@ -464,5 +551,8 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnBackwardCharacter(InputAction.CallbackContext context);
         void OnResetLevel(InputAction.CallbackContext context);
         void OnSplit(InputAction.CallbackContext context);
+        void OnStick(InputAction.CallbackContext context);
+        void OnUnstick(InputAction.CallbackContext context);
+        void OnMerge(InputAction.CallbackContext context);
     }
 }

@@ -19,6 +19,7 @@ public class FiringTower : MonoBehaviour
     [SerializeField] private Transform firingOrigin;
     [SerializeField] private float firingForce;
     [SerializeField] private float firingRate;
+    [SerializeField] Vector2 firingDirection;
     private float delayBetweenBursts;
     float currentTime = 0;
 
@@ -82,14 +83,14 @@ public class FiringTower : MonoBehaviour
     {
         for (int i = 0; i < PROJECTILES_AMOUNT; i++)
         {
-            RentAndShoot(firingForce * firingOrigin.right);
+            RentAndShoot(firingForce * firingDirection);
             yield return new WaitForSeconds(sec);
         }
     }
 
     private void SingleShot()
     {
-        RentAndShoot(firingForce * firingOrigin.right);
+        RentAndShoot(firingForce * firingDirection);
     }
 
     private void RentAndShoot(Vector2 force)

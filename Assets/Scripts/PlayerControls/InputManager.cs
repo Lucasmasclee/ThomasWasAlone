@@ -9,6 +9,8 @@ public class InputManager
     public event Action OnFowardCharacter;
     public event Action OnResetLevel;
     public event Action OnSplit;
+    public event Action OnStick;
+    public event Action OnUnstick;
     public Vector2 Movement => PlayerActions.PlayerControls.Movement.ReadValue<Vector2>();
 
     public InputManager()
@@ -20,5 +22,7 @@ public class InputManager
         PlayerActions.PlayerControls.FowardCharacter.performed +=  (c) => OnFowardCharacter?.Invoke();
         PlayerActions.PlayerControls.ResetLevel.performed +=  (c) => OnResetLevel?.Invoke();
         PlayerActions.PlayerControls.Split.performed +=  (c) => OnSplit?.Invoke();
+        PlayerActions.PlayerControls.Stick.performed += (c) => OnStick?.Invoke();
+        PlayerActions.PlayerControls.Unstick.performed += (c) => OnUnstick?.Invoke();
     }
 }

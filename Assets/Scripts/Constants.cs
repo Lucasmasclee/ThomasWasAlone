@@ -13,4 +13,5 @@ public static class Constants
     public const string FLOOR_Green_LAYER = "Floor_Green";
     public const string Firing_Tower_LAYER = "Firing_Tower";
     public const string PROJECTILE_PREFAB = "Prefabs/Projectile";
+    public const string Wall_LAYER = "Wall";
 }
