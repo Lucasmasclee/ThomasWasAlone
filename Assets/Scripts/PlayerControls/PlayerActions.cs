@@ -89,15 +89,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Unstick"",
-                    ""type"": ""Button"",
-                    ""id"": ""56951936-4165-4add-9c2b-0c6c43eb545e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -291,33 +282,11 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5a8a28fa-1bdc-4e8d-aa7e-f16d3155d261"",
-                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
                     ""action"": ""Stick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""185f0a5d-a926-4912-a2c2-7f1c48518fba"",
-                    ""path"": ""<Keyboard>/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Unstick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b57d7e67-a567-4547-9dbc-0faf9be4de05"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""GamePad"",
-                    ""action"": ""Unstick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -358,7 +327,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_PlayerControls_ResetLevel = m_PlayerControls.FindAction("ResetLevel", throwIfNotFound: true);
         m_PlayerControls_Split = m_PlayerControls.FindAction("Split", throwIfNotFound: true);
         m_PlayerControls_Stick = m_PlayerControls.FindAction("Stick", throwIfNotFound: true);
-        m_PlayerControls_Unstick = m_PlayerControls.FindAction("Unstick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -427,7 +395,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_ResetLevel;
     private readonly InputAction m_PlayerControls_Split;
     private readonly InputAction m_PlayerControls_Stick;
-    private readonly InputAction m_PlayerControls_Unstick;
     public struct PlayerControlsActions
     {
         private @PlayerActions m_Wrapper;
@@ -439,7 +406,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @ResetLevel => m_Wrapper.m_PlayerControls_ResetLevel;
         public InputAction @Split => m_Wrapper.m_PlayerControls_Split;
         public InputAction @Stick => m_Wrapper.m_PlayerControls_Stick;
-        public InputAction @Unstick => m_Wrapper.m_PlayerControls_Unstick;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -470,9 +436,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Stick.started += instance.OnStick;
             @Stick.performed += instance.OnStick;
             @Stick.canceled += instance.OnStick;
-            @Unstick.started += instance.OnUnstick;
-            @Unstick.performed += instance.OnUnstick;
-            @Unstick.canceled += instance.OnUnstick;
         }
 
         private void UnregisterCallbacks(IPlayerControlsActions instance)
@@ -498,9 +461,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Stick.started -= instance.OnStick;
             @Stick.performed -= instance.OnStick;
             @Stick.canceled -= instance.OnStick;
-            @Unstick.started -= instance.OnUnstick;
-            @Unstick.performed -= instance.OnUnstick;
-            @Unstick.canceled -= instance.OnUnstick;
         }
 
         public void RemoveCallbacks(IPlayerControlsActions instance)
@@ -545,6 +505,5 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnResetLevel(InputAction.CallbackContext context);
         void OnSplit(InputAction.CallbackContext context);
         void OnStick(InputAction.CallbackContext context);
-        void OnUnstick(InputAction.CallbackContext context);
     }
 }
