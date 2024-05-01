@@ -38,6 +38,14 @@ public class PlayerController : MonoBehaviour, IDamageable
         pointer.enabled = false;
     }
 
+    private void LateUpdate()
+    {
+        if (!pointer.enabled)
+        {
+            ChangeXVelocity(0);
+        }
+    }
+
     public void SetStatus(int index)
     {
         if (status == null)
@@ -76,10 +84,15 @@ public class PlayerController : MonoBehaviour, IDamageable
             realStickyCooldown -= Time.fixedDeltaTime;
             canSticky = realStickyCooldown <= 0;
         }
-        velocity = myRigidBody.velocity;
-        velocity.x = inputMovement.x * (moveSpeed * Time.fixedDeltaTime);
-        myRigidBody.velocity = velocity;
+        ChangeXVelocity(inputMovement.x * (moveSpeed * Time.fixedDeltaTime));
         return true;
+    }
+
+    private void ChangeXVelocity(float x)
+    {
+        velocity = myRigidBody.velocity;
+        velocity.x = x;
+        myRigidBody.velocity = velocity;
     }
 
     public void OnMovement(Vector2 value)
