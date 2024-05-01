@@ -268,11 +268,33 @@
                 },
                 {
                     "name": "",
+                    "id": "5a8a28fa-1bdc-4e8d-aa7e-f16d3155d261",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "Stick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "185f0a5d-a926-4912-a2c2-7f1c48518fba",
                     "path": "<Keyboard>/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
+                    "action": "Unstick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b57d7e67-a567-4547-9dbc-0faf9be4de05",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
                     "action": "Unstick",
                     "isComposite": false,
                     "isPartOfComposite": false
