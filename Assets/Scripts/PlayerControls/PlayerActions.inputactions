@@ -67,15 +67,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Unstick",
-                    "type": "Button",
-                    "id": "56951936-4165-4add-9c2b-0c6c43eb545e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -268,12 +259,12 @@
                 },
                 {
                     "name": "",
-                    "id": "185f0a5d-a926-4912-a2c2-7f1c48518fba",
-                    "path": "<Keyboard>/x",
+                    "id": "5a8a28fa-1bdc-4e8d-aa7e-f16d3155d261",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Unstick",
+                    "groups": "GamePad",
+                    "action": "Stick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
