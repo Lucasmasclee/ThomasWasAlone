@@ -26,9 +26,13 @@ public class PlayerController : MonoBehaviour, IDamageable
     public bool IsDead { get; private set; } = false;
     private (bool Sticky, StickySide Side) isSticky;
     private const float stickyOffset = 0.02f;
+    private Vector2 lastCheckpointPosition;
+    private int lastCheckpointIndex;
 
     private void Awake()
     {
+        lastCheckpointIndex = -1;
+        lastCheckpointPosition = transform.position;
         canSticky = true;
         realStickyCooldown = stickyCooldown;
         isSticky = (false, StickySide.LEFT);
@@ -204,6 +208,19 @@ public class PlayerController : MonoBehaviour, IDamageable
             Constants.FLOOR_Pink_LAYER,
             Constants.FLOOR_Green_LAYER,
             Constants.Firing_Tower_LAYER);
+
+    public void SetNewCheckpoint(Vector2 newCheckpointPosition, int index)
+    {
+        if (index <= lastCheckpointIndex) return;
+        
+        lastCheckpointIndex = index;
+        lastCheckpointPosition = newCheckpointPosition;
+    }
+
+    public void ReturnToLastCheckpoint()
+    {
+        this.transform.position = lastCheckpointPosition;
+    }
 
     public void TakeDamage(int damageAmount)
     {
