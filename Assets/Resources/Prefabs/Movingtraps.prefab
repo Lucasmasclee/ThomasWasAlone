@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3525559928698268490}
   - component: {fileID: 7831401096047227380}
   - component: {fileID: 4411459307526203656}
-  - component: {fileID: 2254360378825882270}
+  - component: {fileID: 9167376334551508953}
   m_Layer: 0
   m_Name: Traps1
   m_TagString: Untagged
@@ -320,7 +320,7 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
---- !u!114 &2254360378825882270
+--- !u!114 &9167376334551508953
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -329,10 +329,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7354531632391351627}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe6d6bd73b13efc479cf6398aa3ee04d, type: 3}
+  m_Script: {fileID: 11500000, guid: b694959cb1ee31245b5a294a9f716bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileDamage: 5
 --- !u!1 &7589610768501362621
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,7 +768,7 @@ GameObject:
   - component: {fileID: 3744327024696956331}
   - component: {fileID: 5998367785734323679}
   - component: {fileID: 7713214737463365480}
-  - component: {fileID: 6200482184644554601}
+  - component: {fileID: 41178878392483874}
   m_Layer: 0
   m_Name: Traps2
   m_TagString: Untagged
@@ -1083,7 +1082,7 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
---- !u!114 &6200482184644554601
+--- !u!114 &41178878392483874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1092,7 +1091,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9176052228172836073}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe6d6bd73b13efc479cf6398aa3ee04d, type: 3}
+  m_Script: {fileID: 11500000, guid: b694959cb1ee31245b5a294a9f716bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileDamage: 5
