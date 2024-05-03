@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void Split() => status.Split();
 
-    public void Merge() => status.Merge();
+    //public void Merge() => status.Merge();
 
     public bool CanSplit()
     {
