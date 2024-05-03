@@ -23,6 +23,5 @@ public class InputManager
         PlayerActions.PlayerControls.ResetLevel.performed +=  (c) => OnResetLevel?.Invoke();
         PlayerActions.PlayerControls.Split.performed +=  (c) => OnSplit?.Invoke();
         PlayerActions.PlayerControls.Stick.performed += (c) => OnStick?.Invoke();
-        PlayerActions.PlayerControls.Unstick.performed += (c) => OnUnstick?.Invoke();
     }
 }
