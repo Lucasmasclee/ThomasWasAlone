@@ -32,13 +32,16 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IDamageable damageable = collision.GetComponent<IDamageable>();
-
+        int otherLayer = collision.gameObject.layer;
+        if (this.gameObject != null && otherLayer != LayerMask.NameToLayer("Firing_tower"))
+        {
+            Destroy(this.gameObject);
+        }
         if (damageable == null)
         {
             return;
         }
         damageable.TakeDamage(projectileDamage);
-        Destroy(this.gameObject);
     }
 
     public void Shoot(Vector2 force, Action<Projectile> callBack)
