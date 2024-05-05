@@ -42,6 +42,7 @@ public class Teleports : MonoBehaviour
         AllowTeleport(!boxTrigger.IsTouchingLayers(layerPlayer)); // True if nothing is in front of 2nd portal
         if (t1box.IsTouchingLayers(layerPlayer) && !boxTrigger.IsTouchingLayers(layerPlayer))
         {
+            spawnpos = new Vector2(boxTrigger.transform.position.x, boxTrigger.transform.position.y - 0.5f);
             TeleportPlayer(); teleportAllowed = true;
         }
         else
