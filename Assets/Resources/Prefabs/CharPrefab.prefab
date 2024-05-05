@@ -188,7 +188,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 2
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4e53c3963bc946c4b91b3be98600e714, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -214,6 +214,8 @@ MonoBehaviour:
   moveSpeed: 150
   jumpSpeed: 12
   pointer: {fileID: 1648481518254242074}
+  unstickyMagnitude: 5
+  stickyCooldown: 2
 --- !u!61 &7529736272311998548
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -291,8 +293,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0023413005, y: -0.4990756}
-  m_Size: {x: 0.9961708, y: 0.02286339}
+  m_Offset: {x: 0.0026419067, y: -0.4990756}
+  m_Size: {x: 0.94966286, y: 0.022863373}
   m_Direction: 1
 --- !u!1 &9174009304359601423
 GameObject:

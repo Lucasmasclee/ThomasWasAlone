@@ -36,7 +36,7 @@ public class ActivePlayerManager : MonoBehaviour
         GameManager.Instance.InputManager.OnSplit += OnSplit;
         GameManager.Instance.InputManager.OnJump += OnJump;
         GameManager.Instance.InputManager.OnStick += OnStick;
-        GameManager.Instance.InputManager.OnUnstick += OnUnstick;
+        GameManager.Instance.InputManager.OnSelfkill += OnSelfkill;
         ActivePlayerController = playerControllers.First();
         SelectNewChar();
     }
@@ -49,7 +49,7 @@ public class ActivePlayerManager : MonoBehaviour
         GameManager.Instance.InputManager.OnSplit -= OnSplit;
         GameManager.Instance.InputManager.OnJump -= OnJump;
         GameManager.Instance.InputManager.OnStick -= OnStick;
-        GameManager.Instance.InputManager.OnUnstick -= OnUnstick;
+        GameManager.Instance.InputManager.OnSelfkill += OnSelfkill;
     }
 
     private void FixedUpdate()
@@ -116,14 +116,17 @@ public class ActivePlayerManager : MonoBehaviour
         }
     }
 
+    private void OnSelfkill()
+    {
+        if(playerControllers.Count > 1)
+        {
+            ActivePlayerController.TakeDamage(30);
+        }
+    }
+
     private void OnStick()
     {
         ActivePlayerController.OnStick();
-    }
-
-    private void OnUnstick()
-    {
-        ActivePlayerController.OnUnStick();
     }
 
     private void InstantiateNewChar(Vector2 newLocalScale)
@@ -152,7 +155,6 @@ public class ActivePlayerManager : MonoBehaviour
         controllerIndex = (controllerIndex - 1 + playerControllers.Count) % playerControllers.Count;
         ActivePlayerController = playerControllers[controllerIndex];
         SelectNewChar();
-        OnUnstick();
     }
 
     public void OnJump()
@@ -169,7 +171,7 @@ public class ActivePlayerManager : MonoBehaviour
 
     public void MergeObjects(Vector3 pos1, Vector3 pos2, float scale)
     {
-        ActivePlayerController.Merge();
+        //ActivePlayerController.Merge();
         Vector3 spawnPos = (pos1 + pos2) / 2f;
         PlayerController newObj = Instantiate(ActivePlayerController, spawnPos, Quaternion.identity);
         newObj.transform.localScale = new Vector3(scale, scale, 0f);
