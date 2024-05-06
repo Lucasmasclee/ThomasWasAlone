@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private SpriteRenderer pointer;
     [SerializeField] private float unstickyMagnitude = 3f;
     [SerializeField] private float stickyCooldown = 2f;
+    [SerializeField] private bool Isplayer = false;
     private float realStickyCooldown;
     private bool canSticky;
     private Light2D light2D;
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (status == null)
         {
             this.status = new Status(index);
+            Isplayer = true;
         }
     }
 

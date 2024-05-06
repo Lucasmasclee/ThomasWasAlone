@@ -70,11 +70,15 @@ public class Teleports : MonoBehaviour
         foreach (PlayerController obj in objects)
         {
             BoxCollider2D objcollider = obj.GetComponent<BoxCollider2D>();
-            if(objcollider != null && objcollider.IsTouchingLayers(layerTeleport) && teleportAllowed) // checking if teleporting is allowed, before delay
+            Transform Transform = obj.gameObject.transform;
+            GameObject childObject = Transform.GetChild(1).gameObject;
+            SpriteRenderer childComponent = childObject.GetComponent<SpriteRenderer>();
+            if (objcollider != null && objcollider.IsTouchingLayers(layerTeleport) && teleportAllowed && childComponent.enabled) // checking if teleporting is allowed, before delay
             {
                 StartCoroutine(DelayedCode(delayTeleport, obj, objcollider)); // Execute delayed teleport
                 obj.transform.localScale = obj.transform.localScale / scalefactor;
             }
+            
         }
     }
     IEnumerator DelayedCode(float sec, PlayerController obj, BoxCollider2D objcollider)
