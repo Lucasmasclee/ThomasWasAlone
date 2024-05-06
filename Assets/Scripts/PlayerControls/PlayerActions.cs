@@ -89,6 +89,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Selfkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""8e576406-0076-47de-ba0a-146bee3613bc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -289,6 +298,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Stick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7723e31-26a9-4b3d-966e-9feb4f286cd7"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Selfkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -327,6 +347,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_PlayerControls_ResetLevel = m_PlayerControls.FindAction("ResetLevel", throwIfNotFound: true);
         m_PlayerControls_Split = m_PlayerControls.FindAction("Split", throwIfNotFound: true);
         m_PlayerControls_Stick = m_PlayerControls.FindAction("Stick", throwIfNotFound: true);
+        m_PlayerControls_Selfkill = m_PlayerControls.FindAction("Selfkill", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -395,6 +416,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_ResetLevel;
     private readonly InputAction m_PlayerControls_Split;
     private readonly InputAction m_PlayerControls_Stick;
+    private readonly InputAction m_PlayerControls_Selfkill;
     public struct PlayerControlsActions
     {
         private @PlayerActions m_Wrapper;
@@ -406,6 +428,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @ResetLevel => m_Wrapper.m_PlayerControls_ResetLevel;
         public InputAction @Split => m_Wrapper.m_PlayerControls_Split;
         public InputAction @Stick => m_Wrapper.m_PlayerControls_Stick;
+        public InputAction @Selfkill => m_Wrapper.m_PlayerControls_Selfkill;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -436,6 +459,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Stick.started += instance.OnStick;
             @Stick.performed += instance.OnStick;
             @Stick.canceled += instance.OnStick;
+            @Selfkill.started += instance.OnSelfkill;
+            @Selfkill.performed += instance.OnSelfkill;
+            @Selfkill.canceled += instance.OnSelfkill;
         }
 
         private void UnregisterCallbacks(IPlayerControlsActions instance)
@@ -461,6 +487,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Stick.started -= instance.OnStick;
             @Stick.performed -= instance.OnStick;
             @Stick.canceled -= instance.OnStick;
+            @Selfkill.started -= instance.OnSelfkill;
+            @Selfkill.performed -= instance.OnSelfkill;
+            @Selfkill.canceled -= instance.OnSelfkill;
         }
 
         public void RemoveCallbacks(IPlayerControlsActions instance)
@@ -505,5 +534,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnResetLevel(InputAction.CallbackContext context);
         void OnSplit(InputAction.CallbackContext context);
         void OnStick(InputAction.CallbackContext context);
+        void OnSelfkill(InputAction.CallbackContext context);
     }
 }
