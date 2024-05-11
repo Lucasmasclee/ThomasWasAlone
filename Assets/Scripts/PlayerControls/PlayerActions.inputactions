@@ -69,18 +69,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Unstick",
+                    "name": "Selfkill",
                     "type": "Button",
-                    "id": "56951936-4165-4add-9c2b-0c6c43eb545e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Merge",
-                    "type": "Button",
-                    "id": "192517ce-a059-4f25-a878-d29e225c7ea9",
+                    "id": "8e576406-0076-47de-ba0a-146bee3613bc",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -277,23 +268,23 @@
                 },
                 {
                     "name": "",
-                    "id": "185f0a5d-a926-4912-a2c2-7f1c48518fba",
-                    "path": "<Keyboard>/x",
+                    "id": "5a8a28fa-1bdc-4e8d-aa7e-f16d3155d261",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Unstick",
+                    "groups": "GamePad",
+                    "action": "Stick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "72cff04b-e4cb-4809-b6cb-a86036cf943d",
-                    "path": "<Keyboard>/m",
+                    "id": "e7723e31-26a9-4b3d-966e-9feb4f286cd7",
+                    "path": "<Keyboard>/k",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Merge",
+                    "action": "Selfkill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

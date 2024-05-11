@@ -1,10 +1,14 @@
 using DG.Tweening;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
+    private enum StickySide
+    {
+        LEFT = -1,
+        RIGHT = 1
+    }
     private Vector2 inputMovement;
     private Rigidbody2D myRigidBody;
     private Vector2 velocity;
@@ -12,20 +16,38 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float moveSpeed = 100f;
     [SerializeField] private float jumpSpeed = 5f;
     [SerializeField] private SpriteRenderer pointer;
+    [SerializeField] private float unstickyMagnitude = 3f;
+    [SerializeField] private float stickyCooldown = 2f;
+    private float realStickyCooldown;
+    private bool canSticky;
     private Light2D light2D;
-    private int exitChecks = 0;
-    public bool IsAtExit => exitChecks == 2;
     private Status status;
-    float damagedShrinkSpeed = 0.2f;
+    private const float damagedShrinkSpeed = 0.2f;
     public bool IsDead { get; private set; } = false;
+    private (bool Sticky, StickySide Side) isSticky;
+    private const float stickyOffset = 0.02f;
+    private Vector2 lastCheckpointPosition;
+    private int lastCheckpointIndex;
 
     private void Awake()
     {
+        lastCheckpointIndex = -1;
+        lastCheckpointPosition = transform.position;
+        canSticky = true;
+        realStickyCooldown = stickyCooldown;
+        isSticky = (false, StickySide.LEFT);
         myRigidBody = GetComponent<Rigidbody2D>();
         myFeetCollider = GetComponent<CapsuleCollider2D>();
         light2D = GetComponentInChildren<Light2D>();
         pointer.enabled = false;
-        PlayerController[] objects = FindObjectsOfType(typeof(PlayerController)) as PlayerController[];
+    }
+
+    private void LateUpdate()
+    {
+        if (!pointer.enabled)
+        {
+            ChangeXVelocity(0);
+        }
     }
 
     public void SetStatus(int index)
@@ -44,11 +66,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void Split() => status.Split();
 
-    public void Merge() => status.Merge();
+    //public void Merge() => status.Merge();
 
     public bool CanSplit()
     {
-        if (status != null)
+        if (status != null && !isSticky.Sticky)
         {
             return status.CanSplit;
         }
@@ -61,10 +83,20 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             return false;
         }
-        velocity = myRigidBody.velocity;
-        velocity.x = inputMovement.x * (moveSpeed * Time.fixedDeltaTime);
-        myRigidBody.velocity = velocity;
+        if (!canSticky)
+        {
+            realStickyCooldown -= Time.fixedDeltaTime;
+            canSticky = realStickyCooldown <= 0;
+        }
+        ChangeXVelocity(inputMovement.x * (moveSpeed * Time.fixedDeltaTime));
         return true;
+    }
+
+    private void ChangeXVelocity(float x)
+    {
+        velocity = myRigidBody.velocity;
+        velocity.x = x;
+        myRigidBody.velocity = velocity;
     }
 
     public void OnMovement(Vector2 value)
@@ -98,15 +130,62 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void OnStick()
     {
-        if(IsOnWall())
+        if (isSticky.Sticky)
         {
-            myRigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
+            UnStick();
         }
+
+        if (!canSticky) return;
+
+        var (hitTopLeft, hitBottonLeft, hitTopRight, hitBottonRight) = TryHitWalls();
+
+        if (hitTopLeft || hitBottonLeft)
+        {
+            isSticky = (true, StickySide.LEFT);
+
+        }
+        else if (hitTopRight || hitBottonRight)
+        {
+            isSticky = (true, StickySide.RIGHT);
+        }
+        else
+        {
+            return;
+        }
+        myRigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
-    public void OnUnStick()
+    private (bool, bool, bool, bool) TryHitWalls()
     {
-        myRigidBody.constraints = RigidbodyConstraints2D.None;
+        Vector2 spriteSize = GetComponent<SpriteRenderer>().bounds.size;
+        float distance = spriteSize.y / 2;
+        Vector2 top = new Vector2(this.transform.position.x, this.transform.position.y + distance);
+        Vector2 botton = new Vector2(this.transform.position.x, this.transform.position.y - distance);
+        distance += (GetSplitFactor() * stickyOffset);
+        return (HitWall(top, Vector2.left, distance),
+            HitWall(botton, Vector2.left, distance),
+            HitWall(top, Vector2.right, distance),
+            HitWall(botton, Vector2.right, distance));
+    }
+
+    private RaycastHit2D HitWall(Vector2 origin, Vector2 direction, float distance)
+    {
+        Debug.DrawRay(origin, direction, Color.green, 0.4f, false);
+        return Physics2D.Raycast(
+            origin,
+            direction,
+            distance,
+            LayerMask.GetMask(Constants.Wall_LAYER, Constants.Firing_Tower_LAYER, Constants.FLOOR_LAYER));
+    }
+
+    public void UnStick()
+    {
+        isSticky.Sticky = false;
+        myRigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        Vector2 direction = isSticky.Side == StickySide.LEFT ? Vector2.right : Vector2.left;
+        inputMovement += direction * unstickyMagnitude;
+        canSticky = false;
+        realStickyCooldown = stickyCooldown;
     }
 
     public void StopMovement()
@@ -115,16 +194,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         inputMovement = Vector2.zero;
         light2D.enabled = false;
         pointer.enabled = false;
-    }
-
-    public void IncrementExitChecks()
-    {
-        exitChecks++;
-    }
-
-    public void DecrementExitChecks()
-    {
-        exitChecks--;
     }
 
     private bool IsFeetTouching(params string[] layers) => myFeetCollider.IsTouchingLayers(LayerMask.GetMask(layers));
@@ -140,12 +209,25 @@ public class PlayerController : MonoBehaviour, IDamageable
             Constants.FLOOR_Green_LAYER,
             Constants.Firing_Tower_LAYER);
 
-    private bool IsOnWall() =>
-        IsFeetTouching(Constants.Wall_LAYER,
-            Constants.Firing_Tower_LAYER);
+    public void SetNewCheckpoint(Vector2 newCheckpointPosition, int index)
+    {
+        if (index <= lastCheckpointIndex) return;
+        
+        lastCheckpointIndex = index;
+        lastCheckpointPosition = newCheckpointPosition;
+    }
+
+    public void ReturnToLastCheckpoint()
+    {
+        this.transform.position = lastCheckpointPosition;
+    }
 
     public void TakeDamage(int damageAmount)
     {
+        if (isSticky.Sticky)
+        {
+            UnStick();
+        }
         while (damageAmount > 0)
         {
             if (!CanSplit())

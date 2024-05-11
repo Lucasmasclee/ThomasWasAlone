@@ -91,18 +91,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Unstick"",
+                    ""name"": ""Selfkill"",
                     ""type"": ""Button"",
-                    ""id"": ""56951936-4165-4add-9c2b-0c6c43eb545e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Merge"",
-                    ""type"": ""Button"",
-                    ""id"": ""192517ce-a059-4f25-a878-d29e225c7ea9"",
+                    ""id"": ""8e576406-0076-47de-ba0a-146bee3613bc"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -299,23 +290,23 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""185f0a5d-a926-4912-a2c2-7f1c48518fba"",
-                    ""path"": ""<Keyboard>/x"",
+                    ""id"": ""5a8a28fa-1bdc-4e8d-aa7e-f16d3155d261"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Unstick"",
+                    ""groups"": ""GamePad"",
+                    ""action"": ""Stick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""72cff04b-e4cb-4809-b6cb-a86036cf943d"",
-                    ""path"": ""<Keyboard>/m"",
+                    ""id"": ""e7723e31-26a9-4b3d-966e-9feb4f286cd7"",
+                    ""path"": ""<Keyboard>/k"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Merge"",
+                    ""action"": ""Selfkill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -356,8 +347,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_PlayerControls_ResetLevel = m_PlayerControls.FindAction("ResetLevel", throwIfNotFound: true);
         m_PlayerControls_Split = m_PlayerControls.FindAction("Split", throwIfNotFound: true);
         m_PlayerControls_Stick = m_PlayerControls.FindAction("Stick", throwIfNotFound: true);
-        m_PlayerControls_Unstick = m_PlayerControls.FindAction("Unstick", throwIfNotFound: true);
-        m_PlayerControls_Merge = m_PlayerControls.FindAction("Merge", throwIfNotFound: true);
+        m_PlayerControls_Selfkill = m_PlayerControls.FindAction("Selfkill", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -426,8 +416,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_ResetLevel;
     private readonly InputAction m_PlayerControls_Split;
     private readonly InputAction m_PlayerControls_Stick;
-    private readonly InputAction m_PlayerControls_Unstick;
-    private readonly InputAction m_PlayerControls_Merge;
+    private readonly InputAction m_PlayerControls_Selfkill;
     public struct PlayerControlsActions
     {
         private @PlayerActions m_Wrapper;
@@ -439,8 +428,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @ResetLevel => m_Wrapper.m_PlayerControls_ResetLevel;
         public InputAction @Split => m_Wrapper.m_PlayerControls_Split;
         public InputAction @Stick => m_Wrapper.m_PlayerControls_Stick;
-        public InputAction @Unstick => m_Wrapper.m_PlayerControls_Unstick;
-        public InputAction @Merge => m_Wrapper.m_PlayerControls_Merge;
+        public InputAction @Selfkill => m_Wrapper.m_PlayerControls_Selfkill;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -471,12 +459,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Stick.started += instance.OnStick;
             @Stick.performed += instance.OnStick;
             @Stick.canceled += instance.OnStick;
-            @Unstick.started += instance.OnUnstick;
-            @Unstick.performed += instance.OnUnstick;
-            @Unstick.canceled += instance.OnUnstick;
-            @Merge.started += instance.OnMerge;
-            @Merge.performed += instance.OnMerge;
-            @Merge.canceled += instance.OnMerge;
+            @Selfkill.started += instance.OnSelfkill;
+            @Selfkill.performed += instance.OnSelfkill;
+            @Selfkill.canceled += instance.OnSelfkill;
         }
 
         private void UnregisterCallbacks(IPlayerControlsActions instance)
@@ -502,12 +487,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Stick.started -= instance.OnStick;
             @Stick.performed -= instance.OnStick;
             @Stick.canceled -= instance.OnStick;
-            @Unstick.started -= instance.OnUnstick;
-            @Unstick.performed -= instance.OnUnstick;
-            @Unstick.canceled -= instance.OnUnstick;
-            @Merge.started -= instance.OnMerge;
-            @Merge.performed -= instance.OnMerge;
-            @Merge.canceled -= instance.OnMerge;
+            @Selfkill.started -= instance.OnSelfkill;
+            @Selfkill.performed -= instance.OnSelfkill;
+            @Selfkill.canceled -= instance.OnSelfkill;
         }
 
         public void RemoveCallbacks(IPlayerControlsActions instance)
@@ -552,7 +534,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnResetLevel(InputAction.CallbackContext context);
         void OnSplit(InputAction.CallbackContext context);
         void OnStick(InputAction.CallbackContext context);
-        void OnUnstick(InputAction.CallbackContext context);
-        void OnMerge(InputAction.CallbackContext context);
+        void OnSelfkill(InputAction.CallbackContext context);
     }
 }
